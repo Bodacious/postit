@@ -1,5 +1,4 @@
 PostitTemplate::Application.routes.draw do
-  root to: 'posts#index'
   
   get '/register', to: 'users#new'
   get '/login', to: 'sessions#new'
@@ -7,13 +6,20 @@ PostitTemplate::Application.routes.draw do
   get '/logout', to: 'sessions#destroy'
   
   resources :posts, except: [:destroy] do
-    post :vote, on: :member #will recognise /posts/id/vote with POST and route to vote method in PostsController
+    
+    resources :votes
+    
     resources :comments, only: [:create] do
-      post :vote, on: :member #will recognise /posts/id/comments/id/vote vote with POST and route to vote method in CommentsController
+      # will recognise /posts/id/comments/id/vote vote with POST and route to vote method
+      # in CommentsController
+      post :vote, on: :member 
     end
   end
     
   resources :categories, only: [:new, :create, :show]
+  
   resources :users, only: [:create, :show, :edit, :update ]
+
+  root to: 'posts#index'
   
 end
